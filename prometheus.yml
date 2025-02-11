@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 5s  # Collect metrics every 5 seconds
+
+scrape_configs:
+  - job_name: 'sanitised-data'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:8001']
