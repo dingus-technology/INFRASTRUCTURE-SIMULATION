@@ -34,7 +34,7 @@ docker compose up --build
 6. Set the URL as:
 
    ```
-   http://prometheus:9090
+   http://host.docker.internal:9090
    ```
 
 7. Click **"Save & Test"**.
