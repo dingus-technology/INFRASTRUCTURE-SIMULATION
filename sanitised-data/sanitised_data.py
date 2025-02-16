@@ -18,7 +18,7 @@ start_time = time.time()
 
 while True:
    
-    if int(random.uniform(0, 100)) == 5:
+    if int(random.uniform(0, 60)) == 5:
         cpu_load = random.uniform(90, 100)
     else:
         cpu_load = random.uniform(20, 30)
