@@ -11,7 +11,11 @@ cpu_load_gauge = Gauge('cpu_load', 'Database CPU load')
 logging.basicConfig(level=logging.INFO)
 logging_loki.emitter.LokiEmitter.level_tag = "level"
 
-loki_handler = LokiHandler("http://host.docker.internal:3100/loki/api/v1/push", version="1")
+loki_handler = LokiHandler(
+    "http://host.docker.internal:3100/loki/api/v1/push",
+    version="1",
+    tags={"job": "cpu_monitor", "service": "monitoring-app"}
+    )
 loki_handler.setLevel(logging.INFO)
 
 logger = logging.getLogger("my-logger")
