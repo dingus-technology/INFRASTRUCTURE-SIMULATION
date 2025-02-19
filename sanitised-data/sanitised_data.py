@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 cpu_load_gauge = Gauge('cpu_load', 'Database CPU load')
 
 # Setup Loki logging handler
-loki_handler = LokiHandler("http://loki:3100/loki/api/v1/push")  # Assuming Loki is running on localhost and port 3100
+loki_handler = LokiHandler("http://host.docker.internal:3100/loki/api/v1/push")  # Assuming Loki is running on localhost and port 3100
 loki_handler.setLevel(logging.INFO)
 logging.getLogger().addHandler(loki_handler)
 
