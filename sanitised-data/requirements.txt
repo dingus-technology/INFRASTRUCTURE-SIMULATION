@@ -1,3 +1,4 @@
 requests
 flask
 prometheus_client
+python-logging-loki

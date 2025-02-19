@@ -1,0 +1,29 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  log_level: info
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 168h
+
+storage_config:
+  boltdb-shipper:
+    directory: /tmp/loki/index
+
+compactor:
+  working_directory: /tmp/loki/compactor
+  retention_enabled: true
+  retention_delete_delay: 1h
+  compaction_interval: 1h
+  compaction_retention: 24h
