@@ -1,45 +1,60 @@
 import time
 import random
 import logging
+import os
 from prometheus_client import Gauge, start_http_server
-
-import logging_loki
 from logging_loki import LokiHandler
 
-cpu_load_gauge = Gauge('cpu_load', 'Database CPU load')
+cpu_load_gauge = Gauge("cpu_load", "Database CPU load")
 
-logging.basicConfig(level=logging.INFO)
-logging_loki.emitter.LokiEmitter.level_tag = "level"
+LOKI_URL = os.getenv("LOKI_URL", "http://host.docker.internal:3100/loki/api/v1/push")
+LOG_FORMAT = (
+    '{"timestamp": "%(asctime)s", "level": "%(levelname)s", '
+    '"filename": "%(filename)s", "line": %(lineno)d, "message": "%(message)s"}'
+)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format=LOG_FORMAT,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+logger = logging.getLogger("cpu_monitor_logger")
+logger.setLevel(logging.INFO)
 
 loki_handler = LokiHandler(
-    "http://host.docker.internal:3100/loki/api/v1/push",
+    LOKI_URL,
     version="1",
-    tags={"job": "cpu_monitor", "service": "monitoring-app"}
-    )
-loki_handler.setLevel(logging.INFO)
+    tags={"job": "cpu_monitor", "service": "monitoring-app"},
+)
 
-logger = logging.getLogger("my-logger")
+formatter = logging.Formatter(LOG_FORMAT, datefmt="%Y-%m-%d %H:%M:%S")
+loki_handler.setFormatter(formatter)
 logger.addHandler(loki_handler)
-logger.setLevel(logging.INFO)
 
 try:
     start_http_server(8001)
-    logger.info("Prometheus HTTP server started on port 8001")
+    logger.info("Prometheus HTTP server started", extra={"event": "server_start"})
 except Exception as e:
-    logger.error(f"Failed to start Prometheus HTTP server: {e}")
+    logger.error("Failed to start Prometheus HTTP server", extra={"error": str(e)})
     exit(1)
-    
-start_time = time.time()
 
 while True:
     if int(random.uniform(0, 60)) == 5:
         cpu_load = random.uniform(90, 100)
-        logger.warning(f"High CPU load detected: {cpu_load}")
     else:
-        cpu_load = random.uniform(20, 30)
-    
+        cpu_load = random.uniform(20, 100)
     cpu_load_gauge.set(cpu_load)
-    logger.info(f"New CPU load: {cpu_load}")
-    logger.info(f"Logging to Loki: CPU load is {cpu_load}")
+
+    log_metadata = {"cpu_load": str(cpu_load), "event": "cpu_usage_check"}
+
+    if cpu_load >= 90:
+        logger.warning("High CPU load detected", extra={**log_metadata, "alert": "warning"})
+        logger.error("Kubernetes pod in danger", extra={**log_metadata, "alert": "error"})
+        logger.critical("Critical CPU condition", extra={**log_metadata, "alert": "critical"})
+    else:
+        logger.info("CPU load normal", extra=log_metadata)
     
-    time.sleep(5)
+    logger.info("CPU load updated", extra=log_metadata)
+
+    time.sleep(1)
