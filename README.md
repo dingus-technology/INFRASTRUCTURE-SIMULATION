@@ -1,14 +1,11 @@
-<h1 align="center" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-  <img src="assets/logo-dark.png" alt="Logo" width="50">
-  <span>Monitoring Simulation Data with Loki, Prometheus & Grafana</span>
-</h1>
+# 🐕 Monitoring Simulation Data with Loki, Prometheus & Grafana
 
 <p align="center">
   <img src="assets/grafana-demo-ui.png" alt="Grafana UI" width="850">
 </p>
 
 ## 🚀 Overview
-This guide explains how to set up **Loki**, **Prometheus**, and **Grafana** using Docker Compose to monitor CPU load data from a Python application.
+This guide explains how to set up **Loki**, **Prometheus**, and **Grafana** using Docker Compose to monitor CPU load data from a Python application locally.
 
 🔹 **Prometheus** - Scrapes metrics from the app  
 🔹 **Loki** - Collects & indexes logs  
