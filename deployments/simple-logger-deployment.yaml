@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-logger-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-logger
+  template:
+    metadata:
+      labels:
+        app: simple-logger
+    spec:
+      containers:
+        - name: python-logger
+          image: simple-logger:latest
+          imagePullPolicy: Never  # Ensure it's using the local image
+          ports:
+            - containerPort: 8001  # Change this to match Prometheus
+          env:
+            - name: LOKI_URL
+              value: "http://loki:3100/loki/api/v1/push"
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-logger-service
+spec:
+  selector:
+    app: simple-logger
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
