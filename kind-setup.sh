@@ -71,3 +71,7 @@ kubectl get pods
 # Port-forward Grafana to localhost
 log_info "Port-forwarding Grafana to localhost:3000..."
 kubectl port-forward --address 0.0.0.0 svc/grafana 3000:3000
+
+# Kill all pods and deployments
+kubectl delete --all pods --namespace=default
+kubectl delete deployment --all

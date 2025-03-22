@@ -17,29 +17,32 @@ This guide explains how to set up **Loki**, **Prometheus**, and **Grafana** usin
 Ensure you have the following installed:
 - [Docker & Docker Compose](https://docs.docker.com/get-docker/)
 - [Colima](https://github.com/abiosoft/colima) (for Mac users)
+- [kind](https://kind.sigs.k8s.io/)
+- [kubectl](https://kubernetes.io/docs/reference/kubectl/)
 
+If Mac user run the following script to install the tools:
+```bash
+brew install colima
+colima start
+brew install kind
+brew install kubectl
+```
 
 ---
 
 ## 🚀 Start the Monitoring Stack
+### With Docker Compose or `kind`
 Run the following command to build and start the services:
 
 ```bash
 docker compose up --build
 ```
+or
 
----
 
-## 🔍 Verify Prometheus Scraping Data
-1. Open **Prometheus UI** → [http://localhost:9090](http://localhost:9090)
-2. Navigate to **"Status" > "Targets"** to check if `sanitised-data` is `UP`
-3. Run a query in PromQL:
-
-   ```promql
-   cpu_load
-   ```
-
-   You should see CPU load data in real-time!
+```bash
+bash kind-setup.sh
+```
 
 ---
 
@@ -53,7 +56,7 @@ docker compose up --build
 5. Set the **URL**:
 
    ```
-   http://host.docker.internal:9090
+   http://prometheus:9090
    ```
 
 6. Click **"Save & Test"** 🎯
@@ -77,7 +80,13 @@ docker compose up --build
 ## 📜 Configure Loki for Log Monitoring
 1. Navigate to **"Logs"** in Grafana
 2. Select **"Loki"** as the **"Data Source"**
-3. Run a log query to filter logs:
+3. Set the **URL**:
+
+   ```
+   http://loki:3100
+   ```
+
+4. Run a log query to filter logs:
 
    ```logql
    {app="sanitised-data"}
