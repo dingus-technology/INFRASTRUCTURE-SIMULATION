@@ -1,9 +1,22 @@
-# kind-setup.sh: A script to setup a Kind cluster and deploy the services to it.
 #!/bin/bash
 
 # Function to print logs in bold for clarity
 log_info() {
     echo -e "\033[1;34m[INFO]\033[0m \033[1m$(date '+%Y-%m-%d %H:%M:%S') - $1\033[0m"
+}
+
+# Function to check pod health
+check_pod_health() {
+    log_info "Checking pod health..."
+    # Wait for all pods to be running
+    kubectl wait --for=condition=Ready pods --all --timeout=600s
+    if [[ $? -ne 0 ]]; then
+        log_info "Some pods are not healthy."
+        kubectl get pods
+        exit 1
+    else
+        log_info "All pods are healthy."
+    fi
 }
 
 # Create a Kind cluster if it doesn't exist
@@ -64,14 +77,16 @@ kubectl apply -f deployments/monitoring-deployment.yaml # Grafana, Prometheus, L
 kubectl apply -f deployments/simple-logger-deployment.yaml # Simple Logger
 # kubectl apply -f deployments/sanitised-data-deployment.yaml
 
-# List available pods after deployment
-log_info "Listing available pods:"
-kubectl get pods
+# Check pod health before port-forwarding
+check_pod_health
 
 # Port-forward Grafana to localhost
 log_info "Port-forwarding Grafana to localhost:3000..."
-kubectl port-forward --address 0.0.0.0 svc/grafana 3000:3000
+kubectl port-forward --address 0.0.0.0 svc/grafana 3000:3000 &
 
-# Kill all pods and deployments
-kubectl delete --all pods --namespace=default
-kubectl delete deployment --all
+# Graceful shutdown handling
+trap 'echo "Caught Ctrl+C! Do you want to delete the deployed resources? (y/n)"; read answer; if [ "$answer" = "y" ]; then kubectl delete --all pods --namespace=default; kubectl delete deployment --all; fi; exit' SIGINT
+
+# Keep the script running until Ctrl+C
+log_info "Press Ctrl+C to stop and delete the resources."
+wait

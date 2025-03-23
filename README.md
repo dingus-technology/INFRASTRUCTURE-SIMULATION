@@ -1,11 +1,11 @@
-# 🐕 Monitoring Simulation Data with Loki, Prometheus & Grafana
+# 🐕 K8 Monitoring Simulation Data with Loki, Prometheus & Grafana
 
 <p align="center">
   <img src="assets/grafana-demo-ui.png" alt="Grafana UI" width="850">
 </p>
 
 ## 🚀 Overview
-This guide explains how to set up **Loki**, **Prometheus**, and **Grafana** using Docker Compose to monitor CPU load data from a Python application locally.
+This guide explains how to set up **Loki**, **Prometheus**, and **Grafana** using **Kubernetes** to monitor CPU load data from a Python application locally.
 
 🔹 **Prometheus** - Scrapes metrics from the app  
 🔹 **Loki** - Collects & indexes logs  
@@ -15,7 +15,7 @@ This guide explains how to set up **Loki**, **Prometheus**, and **Grafana** usin
 
 ## 📌 Prerequisites
 Ensure you have the following installed:
-- [Docker & Docker Compose](https://docs.docker.com/get-docker/)
+- [Docker & `Docker Compose`](https://docs.docker.com/get-docker/)
 - [Colima](https://github.com/abiosoft/colima) (for Mac users)
 - [kind](https://kind.sigs.k8s.io/)
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/)
