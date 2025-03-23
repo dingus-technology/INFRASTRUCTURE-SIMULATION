@@ -123,6 +123,17 @@ spec:
           configMap:
             name: loki-config
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+spec:
+  ports:
+    - port: 3100
+      targetPort: 3100
+  selector:
+    app: loki
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
