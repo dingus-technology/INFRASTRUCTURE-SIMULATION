@@ -73,9 +73,10 @@ kind load docker-image simple-logger:latest
 
 # Deploy the services to the Kind cluster
 log_info "Deploying services to the Kind cluster..."
-kubectl apply -f deployments/monitoring-deployment.yaml # Grafana, Prometheus, Loki
-kubectl apply -f deployments/simple-logger-deployment.yaml # Simple Logger
-# kubectl apply -f deployments/sanitised-data-deployment.yaml
+kubectl apply -f deployments/grafana-deployment.yaml
+kubectl apply -f deployments/prometheus-deployment.yaml
+kubectl apply -f deployments/loki-deployment.yaml
+kubectl apply -f deployments/simple-logger-deployment.yaml 
 
 # Check pod health before port-forwarding
 check_pod_health
