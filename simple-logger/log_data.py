@@ -2,6 +2,7 @@ import time
 import random
 import logging
 import os
+
 from prometheus_client import Gauge, start_http_server
 from logging_loki import LokiHandler
 
