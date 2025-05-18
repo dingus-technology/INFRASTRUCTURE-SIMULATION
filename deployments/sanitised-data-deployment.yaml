@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sanitised-data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sanitised-data
+  template:
+    metadata:
+      labels:
+        app: sanitised-data
+    spec:
+      containers:
+        - name: sanitised-data
+          image: python:3.9-slim
+          ports:
+            - containerPort: 8001
+          volumeMounts:
+            - name: sanitised-data-volume
+              mountPath: /sanitised-data
+          command: ["sh", "/sanitised-data/start.sh"]
+      volumes:
+        - name: sanitised-data-volume
+          hostPath:
+            path: ./sanitised-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sanitised-data
+spec:
+  ports:
+    - port: 8001
+      targetPort: 8001
+  selector:
+    app: sanitised-data

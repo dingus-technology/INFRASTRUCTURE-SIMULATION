@@ -20,6 +20,8 @@ services:
       - ./sanitised-data:/sanitised-data
     depends_on:
       - prometheus
+    networks:
+      - monitoring
     restart: unless-stopped
 
   grafana:
@@ -32,6 +34,8 @@ services:
     depends_on:
       - prometheus
       - loki
+    networks:
+      - monitoring
     restart: unless-stopped
 
   loki:
