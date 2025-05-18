@@ -34,12 +34,13 @@ brew install kubectl
 ### With Docker Compose or `kind`
 Run the following command to build and start the services:
 
+For non-K8 deployment:
 ```bash
 docker compose up --build
 ```
 or
 
-
+For K8 deployment:
 ```bash
 bash kind-setup.sh
 ```
